@@ -119,6 +119,14 @@ if __name__ == '__main__':
         ligand_atom_feature_dim=ligand_featurizer.feature_dim
     ).to(args.device)
     # print(model)
+
+    iter_start=10000 ## NEED TO MODIFY EACH TIME
+    if iter_start!=0:
+        model_all=torch.load('logs_diffusion/ldm_2024_04_21__14_32_31/checkpoints/'+str(iter_start)+'.pt')
+        model.load_state_dict(model_all['model']) 
+    else:
+        pass # don't load model
+
     print(f'protein feature dim: {protein_featurizer.feature_dim} ligand feature dim: {ligand_featurizer.feature_dim}')
     logger.info(f'# trainable parameters: {misc.count_parameters(model) / 1e6:.4f} M')
 
@@ -191,7 +199,7 @@ if __name__ == '__main__':
     try:
         best_loss, best_iter = None, None
         loss_it = 0
-        for it in range(1, config.train.max_iters + 1):
+        for it in range(1 + iter_start, config.train.max_iters + 1 + iter_start):
             # with torch.autograd.detect_anomaly():
             loss_it += train(it)
             if it % config.train.val_freq == 0 or it == config.train.max_iters:
