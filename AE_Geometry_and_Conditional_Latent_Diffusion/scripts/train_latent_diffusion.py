@@ -45,6 +45,7 @@ if __name__ == '__main__':
     parser.add_argument('--logdir', type=str, default='./logs_diffusion')
     parser.add_argument('--tag', type=str, default='')
     parser.add_argument('--train_report_iter', type=int, default=200)
+    parser.add_argument('--start_iter', type=int, default=0)
     args = parser.parse_args()
 
     # Load configs
@@ -120,9 +121,9 @@ if __name__ == '__main__':
     ).to(args.device)
     # print(model)
 
-    iter_start=10000 ## NEED TO MODIFY EACH TIME
+    iter_start=args.start_iter
     if iter_start!=0:
-        model_all=torch.load('logs_diffusion/ldm_2024_04_21__14_32_31/checkpoints/'+str(iter_start)+'.pt')
+        model_all=torch.load('logs_diffusion/ldm_2024_04_21__14_32_31/checkpoints/'+str(iter_start)+'.pt') ## NEED TO MODIFY EACH TIME
         model.load_state_dict(model_all['model']) 
     else:
         pass # don't load model
