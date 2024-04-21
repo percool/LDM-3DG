@@ -22,7 +22,13 @@ class PocketLigandPairDataset(Dataset):
         self.keys = None
 
         if not os.path.exists(self.processed_path):
+            print("====================================")
+            print("test1")
+            print(f'current folder: {os.getcwd()}')
+            print(f'curdir: {os.curdir}')
+            print(f'list current folder: {os.listdir(os.curdir)}')
             print(f'{self.processed_path} does not exist, begin processing data')
+            print("====================================")
             self._process()
 
     def _connect_db(self):
@@ -49,6 +55,12 @@ class PocketLigandPairDataset(Dataset):
         self.keys = None
         
     def _process(self):
+        print("====================================")
+        print("test2")
+        print(f'current folder: {os.getcwd()}')
+        print(f'curdir: {os.curdir}')
+        print(f'list current folder: {os.listdir(os.curdir)}')
+        print("====================================")
         db = lmdb.open(
             self.processed_path,
             map_size=10*(1024*1024*1024),   # 10GB

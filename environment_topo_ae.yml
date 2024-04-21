@@ -93,8 +93,8 @@ dependencies:
   - zstd=1.5.0=ha95c52a_0
   - pip:
     - networkx==2.6.3
-    - torch==1.11.0+cu113
+    - torch==1.13.1
     - tqdm==4.64.1
     - typing-extensions==4.4.0
-prefix: /scratch/user/yuning.you/.conda/envs/hiervae
+prefix: /scratch/user/fengzh_g/.conda/envs/hiervae
 

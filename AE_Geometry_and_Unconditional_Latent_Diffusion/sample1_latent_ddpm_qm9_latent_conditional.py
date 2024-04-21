@@ -61,6 +61,9 @@ if __name__ == '__main__':
 
     # model
     args2 = torch.load(args.log_dir + '/args.pt')
+    print("args2")
+    # args2.dim_condition=args.dim_condition ## my test
+    print(args2)
     model = Model.load_from_checkpoint(args.log_dir + '/checkpoint-best.ckpt', args=args2)
 
     # load data
