@@ -1,5 +1,8 @@
 # multiprocess for functions
 # reference: https://docs.python.org/3/library/multiprocessing.html
+def temp_test(i):
+    print(temp_test)
+    return i
 def multiprocess(func, data_list, batch_size=32, num_worker=8):
     '''
     func: callabel function

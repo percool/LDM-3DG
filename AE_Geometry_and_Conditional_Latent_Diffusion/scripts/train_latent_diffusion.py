@@ -127,8 +127,8 @@ if __name__ == '__main__':
     # scheduler = utils_train.get_scheduler(config.train.scheduler, optimizer)
 
     # load latent embedding
-    emb2d_all = torch.load('emb2d.pt')
-    emb3d_all = torch.load('emb3d.pt')
+    emb2d_all = torch.load('../AE_geom_cond_weights_and_data/emb2d.pt')
+    emb3d_all = torch.load('../AE_geom_cond_weights_and_data/emb3d.pt')
 
     from tqdm import tqdm
     idx2idx = - torch.ones(len(dataset), dtype=torch.int64)
