@@ -1,7 +1,11 @@
 model:
   # checkpoint: ./pretrained_models/pretrained_diffusion.pt
   # checkpoint: logs_diffusion/training_2023_11_15__21_36_00/checkpoints/56700.pt
-  checkpoint: logs_diffusion/training_2023_11_15__21_36_00/checkpoints/56700.pt
+  # checkpoint: logs_diffusion/training_2023_11_15__21_36_00/checkpoints/56700.pt
+
+  # TODO: add new checkpoint for our 3d_diffusion model
+  # see Chris' guess below:
+  # checkpoint: logs_diffusion/ldm_2024_04_21__14_32_31/checkpoints/56700.pt
 
 sample:
   seed: 2021

@@ -125,6 +125,9 @@ if __name__ == '__main__':
     ).to(args.device)
 
     # model.load_state_dict(torch.load('logs_diffusion/ldm_2023_11_16__18_01_30/checkpoints/30000.pt')['model'])
+    
+    # Load in trained weights
+    # TODO: check path correct
     model.load_state_dict(torch.load('../AE_geom_cond_weights_and_data/weight_diffusion.pt')['model'])
 
     # print(model)
@@ -139,12 +142,12 @@ if __name__ == '__main__':
         batch = batch.to(args.device)
 
         with torch.no_grad():
-            z, emb_prot = model.sample_z(batch.protein_pos, batch.protein_atom_feature.float(), batch.protein_element_batch, num_sample)
+            z, emb_prot = model.sample_z(batch.protein_pos, batch.protein_atom_feature.float(), batch.protein_element_batch, num_sample=num_sample)
 
         zs.append(z.to('cpu'))
         emb_prots.append(emb_prot.to('cpu'))
 
-    zs = torch.cat(zs, dim=0)
+    zs = torch.cat(zs, dim=0) # these are z_3d
     emb_prots = torch.cat(emb_prots, dim=0)
 
     print(zs.shape, emb_prots.shape)

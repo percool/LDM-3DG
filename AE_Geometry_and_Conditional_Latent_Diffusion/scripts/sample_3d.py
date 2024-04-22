@@ -128,7 +128,7 @@ def sample_diffusion_ligand(model, data, num_samples, batch_size=16, device='cud
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('config', type=str)
+    parser.add_argument('config', type=str) # here is configs/sampling.yml
     # parser.add_argument('-i', '--data_id', type=int)
     parser.add_argument('--device', type=str, default='cuda:0')
     parser.add_argument('--batch_size', type=int, default=100)
@@ -144,6 +144,7 @@ if __name__ == '__main__':
     misc.seed_all(config.sample.seed)
 
     # Load checkpoint
+    # TODO: add new checkpoint to AE_Geometry_and_Conditional_Latent_Diffusion\configs\sampling.yml -- will pop error for now
     ckpt = torch.load(config.model.checkpoint, map_location=args.device)
     logger.info(f"Training Config: {ckpt['config']}")
 
