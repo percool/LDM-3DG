@@ -1,5 +1,7 @@
 # Latent 3D Graph Diffusion
 
+A fork from: 
+
 PyTorch implementation for [Latent 3D Graph Diffusion](https://openreview.net/forum?id=cXbnGtO0NZ)
 
 Yuning You, Ruida Zhou, Jiwoong Park, Haotian Xu, Chao Tian, Zhangyang Wang, Yang Shen
