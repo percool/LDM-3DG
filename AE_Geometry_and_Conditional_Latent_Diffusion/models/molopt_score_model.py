@@ -889,7 +889,7 @@ class LDM_Cond(nn.Module):
         super().__init__()
         self.encoder_3d = EGNNModel(num_layers=2, emb_dim=256, in_dim=27, out_dim=config.hidden_dim, aggr='mean', pool='mean')
 
-        self.ddpm = DDPMModel(dim_in=500, dim_condition=config.hidden_dim, dim_hidden=2048, num_layer=32, T=500, beta_1=1e-4, beta_T=0.02) # 16 --> 32
+        self.ddpm = DDPMModel(dim_in=250, dim_emb2d=250, dim_condition=config.hidden_dim, dim_hidden=2048, num_layer=32, T=500, beta_1=1e-4, beta_T=0.02) # 16 --> 32
         self.ddpm = self.ddpm.to('cuda')
 
     def forward(

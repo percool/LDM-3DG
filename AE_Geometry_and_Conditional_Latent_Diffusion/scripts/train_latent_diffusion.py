@@ -171,7 +171,7 @@ if __name__ == '__main__':
 
                 # emb=torch.cat([emb2d, emb3d], dim=1)
                 emb3d=emb3d,
-                emb3d=emb2d
+                emb2d=emb2d
             )
 
             # pdb.set_trace()
