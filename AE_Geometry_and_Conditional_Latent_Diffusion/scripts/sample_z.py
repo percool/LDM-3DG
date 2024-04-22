@@ -124,7 +124,8 @@ if __name__ == '__main__':
         ligand_atom_feature_dim=ligand_featurizer.feature_dim
     ).to(args.device)
 
-    model.load_state_dict(torch.load('logs_diffusion/ldm_2023_11_16__18_01_30/checkpoints/30000.pt')['model'])
+    # model.load_state_dict(torch.load('logs_diffusion/ldm_2023_11_16__18_01_30/checkpoints/30000.pt')['model'])
+    model.load_state_dict(torch.load('../AE_geom_cond_weights_and_data/weight_diffusion.pt')['model'])
 
     # print(model)
     print(f'protein feature dim: {protein_featurizer.feature_dim} ligand feature dim: {ligand_featurizer.feature_dim}')

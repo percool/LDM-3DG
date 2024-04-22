@@ -26,9 +26,9 @@ class MLP(nn.Module):
 
 
 class Backbone(nn.Module):
-    def __init__(self, dim_in, dim_condition, dim_hidden, num_layer, n_steps):
+    def __init__(self, dim_in, dim_emb2d, dim_condition, dim_hidden, num_layer, n_steps):
         super().__init__()
-        self.linear_model1 = MLP(dim_in + dim_condition, dim_hidden, dim_hidden, num_layer)
+        self.linear_model1 = MLP(dim_in + dim_emb2d + dim_condition, dim_hidden, dim_hidden, num_layer)
 
         # Condition time t
         self.embedding_layer = nn.Embedding(n_steps, dim_hidden)
@@ -37,14 +37,18 @@ class Backbone(nn.Module):
         # condition value
         self.condition_layer = nn.Embedding(1, dim_condition)
 
-    def forward(self, x, condition, idx):
+    def forward(self, x, x_e2m, condition, idx):
         x_condition = torch.einsum('bi,id->bd', condition.unsqueeze(1), self.condition_layer.weight)
-        x = self.linear_model2(self.linear_model1( torch.cat([x, x_condition], dim=1)) + self.embedding_layer(idx))
+        x = self.linear_model2(self.linear_model1( torch.cat([x, x_e2m, x_condition], dim=1)) + self.embedding_layer(idx))
         return x
 
-
+# One latent vetcor:
+# dim_in is corresponding to z_C (conditioned latent vector)
+# Two conditions:
+# dim_emb2d is corresponding to z_G (2d topo ligand embeddings). Embeded by the pretrained auto-encoder.
+# dim_condition is corresponding to protein embeddings. Embeded by the EGNNModel. EGNNModel will also be trained in the diffusion process.
 class Model(nn.Module):
-    def __init__(self, dim_in, dim_condition, dim_hidden, num_layer, T, beta_1, beta_T):
+    def __init__(self, dim_in, dim_emb2d, dim_condition, dim_hidden, num_layer, T, beta_1, beta_T):
         '''
         The epsilon predictor of diffusion process.
 
@@ -59,9 +63,9 @@ class Model(nn.Module):
         self.alpha_bars = torch.cumprod(1 - self.beta, dim = 0)
         self.snr = (1 - self.alpha_bars) / self.alpha_bars
 
-        self.backbone = Backbone(dim_in, dim_condition, dim_hidden, num_layer, T)
+        self.backbone = Backbone(dim_in, dim_emb2d, dim_condition, dim_hidden, num_layer, T)
 
-    def loss_fn(self, x, condition, idx=None):
+    def loss_fn(self, x, x_emb2d, condition, idx=None):
         '''
         This function performed when only training phase.
 
@@ -69,11 +73,11 @@ class Model(nn.Module):
         idx        : if None (training phase), we perturbed random index. Else (inference phase), it is recommended that you specify.
 
         '''
-        output, epsilon, alpha_bar = self.forward(x, condition, idx=idx, get_target=True)
+        output, epsilon, alpha_bar = self.forward(x, x_emb2d, condition, idx=idx, get_target=True)
         loss = (output - epsilon).square().mean()
         return loss
 
-    def forward(self, x, condition, idx=None, get_target=False):
+    def forward(self, x, x_emb2d, condition, idx=None, get_target=False):
         '''
         x          : real data if idx==None else perturbation data
         idx        : if None (training phase), we perturbed random index. Else (inference phase), it is recommended that you specify.
@@ -91,7 +95,7 @@ class Model(nn.Module):
             idx = torch.Tensor([idx for _ in range(x.size(0))]).to(x.device).long()
             x_tilde = x
 
-        output = self.backbone(x_tilde, condition, idx)        
+        output = self.backbone(x_tilde, x_emb2d, condition, idx)        
         return (output, epsilon, used_alpha_bars) if get_target else output
 
     def neg_loglikelihood(self, x):

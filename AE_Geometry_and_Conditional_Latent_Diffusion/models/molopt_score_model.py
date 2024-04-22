@@ -889,17 +889,17 @@ class LDM_Cond(nn.Module):
         super().__init__()
         self.encoder_3d = EGNNModel(num_layers=2, emb_dim=256, in_dim=27, out_dim=config.hidden_dim, aggr='mean', pool='mean')
 
-        self.ddpm = DDPMModel(dim_in=500, dim_condition=config.hidden_dim, dim_hidden=2048, num_layer=32, T=500, beta_1=1e-4, beta_T=0.02) # 16 --> 32
+        self.ddpm = DDPMModel(dim_in=250, dim_emb2d=250, dim_condition=config.hidden_dim, dim_hidden=2048, num_layer=32, T=500, beta_1=1e-4, beta_T=0.02) # 16 --> 32
         self.ddpm = self.ddpm.to('cuda')
 
     def forward(
-            self, protein_pos, protein_v, batch_protein, ligand_pos, ligand_v, batch_ligand, emb, time_step=None, return_all=False, fix_x=False
+            self, protein_pos, protein_v, batch_protein, ligand_pos, ligand_v, batch_ligand, emb3d, emb2d, time_step=None, return_all=False, fix_x=False
     ):
 
         edge_index = radius_graph(protein_pos, r=10, batch=batch_protein)
         _, emb_protein = self.encoder_3d(protein_v, protein_pos, edge_index, batch_protein, tanh=False)
 
-        loss = self.ddpm.loss_fn(emb, emb_protein)
+        loss = self.ddpm.loss_fn(emb3d, emb2d, emb_protein)
 
         return loss
     

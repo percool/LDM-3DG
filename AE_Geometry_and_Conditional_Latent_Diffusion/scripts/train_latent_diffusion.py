@@ -116,8 +116,8 @@ if __name__ == '__main__':
     logger.info('Building model...')
     model = LDM_Cond(
         config.model,
-        protein_atom_feature_dim=protein_featurizer.feature_dim,
-        ligand_atom_feature_dim=ligand_featurizer.feature_dim
+        protein_atom_feature_dim=protein_featurizer.feature_dim, # curretnly useless
+        ligand_atom_feature_dim=ligand_featurizer.feature_dim # curretnly useless
     ).to(args.device)
     # print(model)
 
@@ -165,11 +165,13 @@ if __name__ == '__main__':
                 protein_v=batch.protein_atom_feature.float(),
                 batch_protein=batch.protein_element_batch,
 
-                ligand_pos=torch.zeros(num_batch, 3).to(args.device),
-                ligand_v=torch.ones(num_batch, config.model.hidden_dim-1).to(args.device),
-                batch_ligand=torch.arange(num_batch).to(args.device),
+                ligand_pos=torch.zeros(num_batch, 3).to(args.device), # curretnly useless
+                ligand_v=torch.ones(num_batch, config.model.hidden_dim-1).to(args.device), # curretnly useless
+                batch_ligand=torch.arange(num_batch).to(args.device), # curretnly useless
 
-                emb=torch.cat([emb2d, emb3d], dim=1)
+                # emb=torch.cat([emb2d, emb3d], dim=1)
+                emb3d=emb3d,
+                emb2d=emb2d
             )
 
             # pdb.set_trace()
