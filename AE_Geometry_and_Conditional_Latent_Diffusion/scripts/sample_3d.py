@@ -167,6 +167,8 @@ if __name__ == '__main__':
     logger.info(f'Successfully load the dataset (size: {len(test_set)})!')
 
     # Load model
+    # TODO: the model used here is ScorePosNet3D ?!
+    # TODO: so we should train a ScorePosNet3D or should we replace it with LDMModel?!
     model = ScorePosNet3D(
         ckpt['config'].model,
         protein_atom_feature_dim=protein_featurizer.feature_dim,
@@ -179,7 +181,7 @@ if __name__ == '__main__':
     from rdkit import Chem
     from datasets.protein_ligand import get_ligand_atom_features
 
-    zs = torch.load('./samples_latent/sample_z.pt')
+    zs = torch.load('./samples_latent/sample_z.pt') # these are z_3d -- are these suppose to be 2d+3d?
     smiles = torch.load('./samples_latent/sample_smiles.pt')
     batch_size = zs.shape[1]
 
