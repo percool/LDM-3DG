@@ -893,13 +893,13 @@ class LDM_Cond(nn.Module):
         self.ddpm = self.ddpm.to('cuda')
 
     def forward(
-            self, protein_pos, protein_v, batch_protein, ligand_pos, ligand_v, batch_ligand, emb, time_step=None, return_all=False, fix_x=False
+            self, protein_pos, protein_v, batch_protein, ligand_pos, ligand_v, batch_ligand, emb3d, emb2d, time_step=None, return_all=False, fix_x=False
     ):
 
         edge_index = radius_graph(protein_pos, r=10, batch=batch_protein)
         _, emb_protein = self.encoder_3d(protein_v, protein_pos, edge_index, batch_protein, tanh=False)
 
-        loss = self.ddpm.loss_fn(emb, emb_protein)
+        loss = self.ddpm.loss_fn(emb3d, emb2d, emb_protein)
 
         return loss
     
