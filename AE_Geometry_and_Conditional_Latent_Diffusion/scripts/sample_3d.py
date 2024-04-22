@@ -182,7 +182,12 @@ if __name__ == '__main__':
     from datasets.protein_ligand import get_ligand_atom_features
 
     zs = torch.load('./samples_latent/sample_z.pt') # these are z_3d -- are these suppose to be 2d+3d?
-    smiles = torch.load('./samples_latent/sample_smiles.pt')
+    smiles = torch.load('./samples_latent/sample_smiles.pt') # now these are from decoder(z_2d)
+
+    # TODO: use ground truth smiles -- below not verified, don't use it now
+    # smiles = torch.load(f='../AE_topo_weights_and_data/smiles2emb_dict.pt')
+
+
     batch_size = zs.shape[1]
 
     n_batch = 5

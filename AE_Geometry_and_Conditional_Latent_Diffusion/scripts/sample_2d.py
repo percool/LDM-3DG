@@ -29,8 +29,11 @@ if __name__ == '__main__':
     # # load latent samples -- Is this originally include latent 3d and 2d?
     # samples = torch.load('./samples_latent/sample_z.pt') # [:10000]
 
+    # TODO: directly load ground truth smile to the decoder
+    
+
+
     # load latent_2d embeddings (all) -- this version
-    # TODO: directly load ground truth to where?
     samples = torch.load('../AE_geom_cond_weights_and_data/emb2d.pt')
     n1, n2, n3 = samples.shape
     samples = samples.reshape((n1*n2, n3))[:, :250]
