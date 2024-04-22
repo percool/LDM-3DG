@@ -170,8 +170,8 @@ if __name__ == '__main__':
                 batch_ligand=torch.arange(num_batch).to(args.device), # curretnly useless
 
                 # emb=torch.cat([emb2d, emb3d], dim=1)
-                emb3d,
-                emb2d
+                emb3d=emb3d,
+                emb3d=emb2d
             )
 
             # pdb.set_trace()
