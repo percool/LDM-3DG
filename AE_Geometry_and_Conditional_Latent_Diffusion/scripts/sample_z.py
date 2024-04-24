@@ -131,6 +131,13 @@ if __name__ == '__main__':
     # model.load_state_dict(torch.load('../AE_geom_cond_weights_and_data/weight_diffusion.pt')['model'])
     model.load_state_dict(torch.load('./logs_diffusion/ldm_2024_04_21__22_32_29/checkpoints/25000.pt')['model'])
     
+    # load latent embedding
+    emb2d_all = torch.load('../AE_geom_cond_weights_and_data/emb2d.pt')
+    emb3d_all = torch.load('../AE_geom_cond_weights_and_data/emb3d.pt')
+    
+    idx2idx = - torch.ones(len(dataset), dtype=torch.int64)
+    idx_val = torch.tensor(torch.load(config.data['split'])['test']) # TODO: check if the name 'test' is right
+    idx2idx[idx_val] = torch.arange(len(val_set))
 
     # print(model)
     print(f'protein feature dim: {protein_featurizer.feature_dim} ligand feature dim: {ligand_featurizer.feature_dim}')
@@ -138,21 +145,27 @@ if __name__ == '__main__':
 
     model.eval()
     num_sample = 1000
+    emb2ds=[]
     zs = []
     emb_prots = []
     for batch in val_loader:
         batch = batch.to(args.device)
+        idxs = idx2idx[batch.id.to('cpu')]
+        emb2d = emb2d_all[idxs].to(args.device)
+        # emb3d = emb3d_all[idxs].to(args.device)
 
         with torch.no_grad():
-            z, emb_prot = model.sample_z(batch.protein_pos, batch.protein_atom_feature.float(), batch.protein_element_batch, num_sample=num_sample)
-
+            z, emb_prot = model.sample_z(emb2d, batch.protein_pos, batch.protein_atom_feature.float(), batch.protein_element_batch, num_sample=num_sample)
+            # emb_prot is predicted emb3d after reverse denoising process from diffusion model
+        emb2ds.append(emb2d.to('cpu'))
         zs.append(z.to('cpu'))
         emb_prots.append(emb_prot.to('cpu'))
 
     zs = torch.cat(zs, dim=0) # these are z_3d
     emb_prots = torch.cat(emb_prots, dim=0)
 
-    print(zs.shape, emb_prots.shape)
+    print(emb2ds.shape, zs.shape, emb_prots.shape)
 
+    torch.save(emb2ds, 'samples_latent/emb2ds.pt') # For evaluation, 2D decoder need to work on this pt file
     torch.save(zs, 'samples_latent/sample_z.pt')
     torch.save(emb_prots, 'samples_latent/emb_protein.pt')

@@ -358,7 +358,7 @@ dependencies:
     - torchsde==0.2.6
     - torchvision==0.12.0
     - tqdm==4.64.1
-    - trampoline==0.1.2
+    - trampoline==0.1.2torch
     - transformers==4.24.0
     - triton==2.0.0
     - umap-learn==0.5.3

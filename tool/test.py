@@ -21,3 +21,4 @@ print(args)
 import logging
 logging.info('Beginning download of GDB9 dataset!')
 print(1)
+print('test1')
