@@ -113,8 +113,16 @@ if __name__ == '__main__':
         follow_batch=FOLLOW_BATCH,
         exclude_keys=collate_exclude_keys
     ))
-    val_loader = DataLoader(val_set, 20, shuffle=False,
-                            follow_batch=FOLLOW_BATCH, exclude_keys=collate_exclude_keys)
+    # val_loader = DataLoader(val_set, 20, shuffle=False,
+                            # follow_batch=FOLLOW_BATCH, exclude_keys=collate_exclude_keys)
+    val_iterator = utils_train.inf_iterator(DataLoader(
+        val_set,
+        batch_size=config.train.batch_size,
+        shuffle=False,
+        num_workers=config.train.num_workers,
+        follow_batch=FOLLOW_BATCH,
+        exclude_keys=collate_exclude_keys
+    ))
 
     # Model
     logger.info('Building model...')
@@ -148,8 +156,11 @@ if __name__ == '__main__':
     emb2ds=[]
     zs = []
     emb_prots = []
-    for batch in val_loader:
-        batch = batch.to(args.device)
+    # for batch in val_loader:
+    for _ in range(10): # TODO
+        batch = next(val_iterator).to(args.device)
+        print(batch)
+        # batch = batch.to(args.device)
         idxs = idx2idx[batch.id.to('cpu')]
         emb2d = emb2d_all[idxs].to(args.device)
         # emb3d = emb3d_all[idxs].to(args.device)
