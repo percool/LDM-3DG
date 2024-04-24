@@ -907,9 +907,14 @@ class LDM_Cond(nn.Module):
         edge_index = radius_graph(protein_pos, r=10, batch=batch_protein)
         _, emb_protein = self.encoder_3d(protein_v, protein_pos, edge_index, batch_protein, tanh=False)
 
+        # print("emb_protein and emb2d [0] shape")
+        # print(emb_protein.shape[0])
+        # print(emb2d.shape[0])
+        
         sampler = DDPMSampler(1e-4, 0.02, 500, self.ddpm, 'cuda', 
                               (250,)) # shape shrink to 3d_Z_c.shape = 250
         _emb_protein = emb_protein.unsqueeze(dim=1).repeat((1, num_sample, 1)).reshape((emb_protein.shape[0]*num_sample, -1))
-        samples = sampler.sampling(emb2d,_emb_protein, True).reshape((emb_protein.shape[0], num_sample, -1))
+        _emb2d = emb2d.unsqueeze(dim=1).repeat((1, num_sample, 1)).reshape((emb2d.shape[0]*num_sample, -1))
+        samples = sampler.sampling(_emb2d,_emb_protein, True).reshape((emb_protein.shape[0], num_sample, -1))
 
         return samples, emb_protein
