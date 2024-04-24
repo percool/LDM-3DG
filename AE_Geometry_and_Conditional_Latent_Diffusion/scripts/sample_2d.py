@@ -32,7 +32,8 @@ if __name__ == '__main__':
 
     # 2. decode G~p(G|z)
     args3 = torch.load('../AE_topo_weights_and_data/args_new.pt')
-    vocab = [x.strip('\r\n ').split() for x in open('../AE_topo_weights_and_data/vocab_pocket_aware.txt')]
+    # vocab = [x.strip('\r\n ').split() for x in open('../AE_topo_weights_and_data/vocab_pocket_aware.txt')]
+    vocab = [x.strip('\r\n ').split() for x in open('../AE_Topology/vocab_pocket_aware.txt')]
     args3.vocab = PairVocab(vocab)
     model = HierVAE(args3).to(device)
     ckpt = torch.load('../AE_topo_weights_and_data/pocket_pretrained/last.ckpt')

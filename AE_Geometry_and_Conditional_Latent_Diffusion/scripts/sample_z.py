@@ -124,14 +124,16 @@ if __name__ == '__main__':
         ligand_atom_feature_dim=ligand_featurizer.feature_dim
     ).to(args.device)
 
-    model.load_state_dict(torch.load('logs_diffusion/ldm_2023_11_16__18_01_30/checkpoints/30000.pt')['model'])
+    # model.load_state_dict(torch.load('logs_diffusion/ldm_2023_11_16__18_01_30/checkpoints/30000.pt')['model'])
+    model.load_state_dict(torch.load('../AE_geom_cond_weights_and_data/weight_diffusion.pt')['model'])
+    # model.load_state_dict(torch.load('logs_diffusion/ldm_2024_04_21__16_54_00/checkpoints/30000.pt')['model'])
 
     # print(model)
     print(f'protein feature dim: {protein_featurizer.feature_dim} ligand feature dim: {ligand_featurizer.feature_dim}')
     logger.info(f'# trainable parameters: {misc.count_parameters(model) / 1e6:.4f} M')
 
     model.eval()
-    num_sample = 1000
+    num_sample = 1000 #1000
     zs = []
     emb_prots = []
     for batch in val_loader:
@@ -148,5 +150,8 @@ if __name__ == '__main__':
 
     print(zs.shape, emb_prots.shape)
 
+    folder_path='samples_latent'
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
     torch.save(zs, 'samples_latent/sample_z.pt')
     torch.save(emb_prots, 'samples_latent/emb_protein.pt')
