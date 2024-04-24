@@ -128,7 +128,9 @@ if __name__ == '__main__':
     
     # Load in trained weights
     # TODO: check path correct
-    model.load_state_dict(torch.load('../AE_geom_cond_weights_and_data/weight_diffusion.pt')['model'])
+    # model.load_state_dict(torch.load('../AE_geom_cond_weights_and_data/weight_diffusion.pt')['model'])
+    model.load_state_dict(torch.load('./logs_diffusion/ldm_2024_04_21__22_32_29/checkpoints/25000.pt')['model'])
+    
 
     # print(model)
     print(f'protein feature dim: {protein_featurizer.feature_dim} ligand feature dim: {ligand_featurizer.feature_dim}')
