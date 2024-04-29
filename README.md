@@ -18,9 +18,10 @@ A pipeline to compress 3D graphs into the latent space, where a (vectorial) diff
 ## 1. Unconditional Generation
 
 ### Training Topological AE
-Config environment following https://github.com/wengong-jin/hgraph2graph#installation, or my conda environment file https://github.com/Shen-Lab/LDM-3DG/blob/main/environment_topo_ae.yml.
+Config environment following https://github.com/wengong-jin/hgraph2graph#installation, or my conda environment file https://github.com/Shen-Lab/LDM-3DG/blob/main/environment_topo_ae.yml. Specifically, ```rdkit=2019.03.4``` if you would like to use my trained checkpoints (related issue: https://github.com/wengong-jin/hgraph2graph/issues/44).
+(```rdkit-pypi-2020.9.5.2``` might also work)
 
-Download data and trained model weights from https://drive.google.com/file/d/1tON3UDGP4rd4mgR1bofFoJKECg_yaCEK/view?usp=drive_link.
+Download data and trained model weights from https://zenodo.org/records/11005382.
 ```
 cd ./AE_Topology
 
@@ -43,7 +44,7 @@ python generate_embedding.py --train ../AE_topo_weights_and_data/processed_data 
 ### Training Geometric AE
 Generic environment would work for the following programs, and my conda environment file https://github.com/Shen-Lab/LDM-3DG/blob/main/environment.yml is also provided for reference.
 
-Download trained model weights and generated samples from https://drive.google.com/file/d/1eNvj6nR-iPrQzg-m0cruViny_GnVUh0a/view?usp=sharing.
+Download trained model weights and generated samples from https://zenodo.org/records/11005378.
 
 ```
 cd ./AE_Geometry_and_Unconditional_Latent_Diffusion
@@ -53,7 +54,7 @@ python main_2dto3d_encoder_decoder_gssl.py --ddp_num_nodes 1 --ddp_device 1 --lo
 ```
 
 ### Generating embedding for qm9 and drugs
-Download code and generated qm9 latent embeddings from https://drive.google.com/file/d/1aZgOZSkjFKGIlebe23CQACVDYz8mcOh8/view?usp=drive_link.
+Download code and generated qm9 latent embeddings from https://zenodo.org/records/11005421.
 ```
 cd ./e3_diffusion_for_molecules
 # qm9
@@ -95,7 +96,7 @@ evaluate_conditional.ipynb
 
 
 ## 2. Conditional Generation on Geometric Object
-Download data, trained model weights and generated samples from https://drive.google.com/file/d/1razYUHMLu1W_4O3ZXMvQwHo02Bgn35oK/view?usp=drive_link.
+Download data, trained model weights and generated samples from https://zenodo.org/records/11005227, https://zenodo.org/records/11005419.
 
 ### Training Topological AE
 ```
