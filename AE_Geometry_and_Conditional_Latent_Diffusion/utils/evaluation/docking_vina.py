@@ -1,3 +1,7 @@
+import sys
+sys.path.append("./autodocktools_prepare_py3k")
+sys.path.append("../../EquiBind/")
+
 from openbabel import pybel
 from meeko import MoleculePreparation
 from meeko import obutils

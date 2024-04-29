@@ -28,6 +28,7 @@ if __name__ == '__main__':
 
     samples = torch.load('./samples_latent/sample_z.pt') # [:10000]
     n1, n2, n3 = samples.shape
+    print(f'n1={n1},n2={n2},n3={n3}')
     samples = samples.reshape((n1*n2, n3))[:, :250]
 
     # 2. decode G~p(G|z)
@@ -42,7 +43,7 @@ if __name__ == '__main__':
     model.eval()
 
     dataset = torch.utils.data.TensorDataset(samples)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=False, num_workers=4)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=64*8*4, shuffle=False, num_workers=8)
     smiles = []
     for batch in tqdm(dataloader):
         batch = batch[0].to(device)
