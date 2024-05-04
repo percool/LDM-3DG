@@ -31,16 +31,18 @@ if __name__ == '__main__':
 
     # TODO: directly load ground truth smile to the decoder
     
-
-
-    # load latent_2d embeddings (all) -- this version
-    samples = torch.load('../AE_geom_cond_weights_and_data/emb2d.pt')
-    n1, n2, n3 = samples.shape
+    samples = torch.load('./samples_latent_dock/emb2ds.pt')
+    n1, n3 = samples.shape
+    n2=1000 # num_sample in sample_z.py
+    
+    samples=np.expand_dims(samples, 1) # in sample_z, emb2ds.pt does not copy n2 times in the 2nd dimension.
+    samples=np.repeat(samples,n2,axis=1)
     samples = samples.reshape((n1*n2, n3))[:, :250]
 
     # 2. decode G~p(G|z)
     args3 = torch.load('../AE_topo_weights_and_data/args_new.pt')
-    vocab = [x.strip('\r\n ').split() for x in open('../AE_topo_weights_and_data/vocab_pocket_aware.txt')]
+    # vocab = [x.strip('\r\n ').split() for x in open('../AE_topo_weights_and_data/vocab_pocket_aware.txt')]
+    vocab = [x.strip('\r\n ').split() for x in open('../AE_Topology/vocab_pocket_aware.txt')]
     args3.vocab = PairVocab(vocab)
     model = HierVAE(args3).to(device)
     ckpt = torch.load('../AE_topo_weights_and_data/pocket_pretrained/last.ckpt')
@@ -49,7 +51,8 @@ if __name__ == '__main__':
     model.eval()
 
     dataset = torch.utils.data.TensorDataset(samples)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=False, num_workers=4)
+    # dataloader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=False, num_workers=4)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=64*8*4, shuffle=False, num_workers=4)
     smiles = []
     for batch in tqdm(dataloader):
         batch = batch[0].to(device)

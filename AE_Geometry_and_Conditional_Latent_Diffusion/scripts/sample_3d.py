@@ -200,7 +200,8 @@ if __name__ == '__main__':
 
         data = test_set[data_id]
         mols2 = []
-        zzs = zs[data_id][:,250:].to('cuda')
+        # zzs = zs[data_id][:,250:].to('cuda') # ligand generation (previous) length:500; 0-249:2d latent vector 250-499: 3d latent vector
+        zzs = zs[data_id][:,0:250].to('cuda') # docking length 250; 0-249: 3d latent vector
         smiss = smiles[data_id*batch_size : (data_id+1)*batch_size]
         atom_typess = []
         pred_posss = []
