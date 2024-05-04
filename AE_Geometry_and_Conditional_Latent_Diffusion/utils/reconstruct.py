@@ -55,6 +55,7 @@ def forms_small_angle(a, b, cutoff=60):
 
 def make_obmol(xyz, atomic_numbers):
     mol = ob.OBMol()
+    print("***in reconstruct.py 0: mol.NumAtoms()=",mol.NumAtoms())
     mol.BeginModify()
     atoms = []
     for xyz, t in zip(xyz, atomic_numbers):
@@ -466,6 +467,7 @@ def reconstruct_from_generated(xyz, atomic_nums, aromatic=None, basic_mode=True)
         indicators = aromatic
 
     mol, atoms = make_obmol(xyz, atomic_nums)
+    print("***in reconstruct.py 1: mol.NumAtoms()=",mol.NumAtoms())
     fixup(atoms, mol, indicators)
 
     connect_the_dots(mol, atoms, indicators, covalent_factor=1.3)
@@ -481,7 +483,7 @@ def reconstruct_from_generated(xyz, atomic_nums, aromatic=None, basic_mode=True)
 
     mol.AddHydrogens()
     fixup(atoms, mol, indicators)
-
+    print("***in reconstruct.py 1.5: mol.NumAtoms()=",mol.NumAtoms())
     # make rings all aromatic if majority of carbons are aromatic
     for ring in ob.OBMolRingIter(mol):
         if 5 <= ring.Size() <= 6:
@@ -508,6 +510,8 @@ def reconstruct_from_generated(xyz, atomic_nums, aromatic=None, basic_mode=True)
 
     mol.PerceiveBondOrders()
     rd_mol = convert_ob_mol_to_rd_mol(mol)
+    print("***in reconstruct.py 2: mol.NumAtoms()=",mol.NumAtoms())
+    # print("***in reconstruct.py 3: rd_mol.NumAtoms()=",rd_mol.NumAtoms())
     try:
         # Post-processing
         rd_mol = postprocess_rd_mol_1(rd_mol)

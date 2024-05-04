@@ -192,6 +192,7 @@ obabel {ligand_id}_out.pdbqt -O{ligand_id}_out.sdf -h
         while self.get_results() is None:
             pass
         results = self.get_results()
+        print("results:",results)
         print('Best affinity:', results[0]['affinity'])
         return results
 

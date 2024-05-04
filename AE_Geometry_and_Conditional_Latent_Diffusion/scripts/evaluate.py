@@ -37,7 +37,7 @@ def print_ring_ratio(all_ring_sizes, logger):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('sample_path', type=str)
-    parser.add_argument('--verbose', type=eval, default=False)
+    parser.add_argument('--verbose', type=eval, default=True) # False
     parser.add_argument('--eval_step', type=int, default=-1)
     parser.add_argument('--data_id', type=int, default=0)
     parser.add_argument('--eval_num_examples', type=int, default=None)
@@ -81,33 +81,49 @@ if __name__ == '__main__':
         num_samples += len(r['atom_types'])
 
         tmp_dir = os.path.join(args.sample_path, 'mols_' + str(args.data_id))
+        logger.info(f"tmp_dir={tmp_dir}")
 
         for sample_idx, (pred_v, pred_pos) in enumerate(zip(r['atom_types'], r['pred_ligand_pos'])):
-
+            # print("========================================================")
+            print("======================NEW LOOP BEGIN====================")
             if 5 in pred_v:
                 continue
 
             try:
                 pred_aromatic = transforms.is_aromatic_from_index(np.array(pred_v), mode='add_aromatic')
                 mol = reconstruct.reconstruct_from_generated(pred_pos, pred_v, pred_aromatic)
+                # print("*** 0 mol.NumAtoms()=",mol.NumAtoms())
+                # logger.info("pred_aromatic+mol success")
             except:
+                # logger.info("pred_aromatic+mol Failed")
                 continue
 
             atoms = [] ; flag = False
             dis = get_pocket_coords(pred_pos, poc_coor.numpy())[1].mean()
 
             # chemical and docking check
-            try:
+            if True:
+            # try:
+            
                 chem_results = scoring_func.get_chem(mol)
                 if args.docking_mode == 'qvina':
                     vina_task = QVinaDockingTask.from_generated_mol(
                         mol, r['data'].ligand_filename, protein_root=args.protein_root)
                     vina_results = vina_task.run_sync()
                 elif args.docking_mode in ['vina_score', 'vina_dock']:
+                    temp_name=r['data'].ligand_filename
+                    logger.info(f'ligand_filename={temp_name}')
+                    logger.info(f'protein_root={args.protein_root}')
+                    logger.info("logger test0")
+                    # print("mol:")
+                    # print("*** 1 mol.NumAtoms()=",mol.NumAtoms())
                     vina_task = VinaDockingTask.from_generated_mol(
                         mol, r['data'].ligand_filename, protein_root=args.protein_root, tmp_dir=tmp_dir, task_id=str(sample_idx))
+                    logger.info("logger test1")
                     score_only_results = vina_task.run(mode='score_only', exhaustiveness=args.exhaustiveness)
+                    logger.info("logger test2")
                     minimize_results = vina_task.run(mode='minimize', exhaustiveness=args.exhaustiveness)
+                    logger.info("logger test3")
                     vina_results = {
                         'score_only': score_only_results,
                         'minimize': minimize_results
@@ -119,10 +135,10 @@ if __name__ == '__main__':
                     vina_results = None
 
                 n_eval_success += 1
-            except:
-                if args.verbose:
-                    logger.warning('Evaluation failed for %s' % f'{example_idx}_{sample_idx}')
-                continue
+            # except:
+            #     if args.verbose:
+            #         logger.warning('Evaluation failed for %s' % f'{example_idx}_{sample_idx}')
+            #     continue
 
             # now we only consider complete molecules as success
             bond_dist = eval_bond_length.bond_distance_from_mol(mol)
@@ -135,7 +151,11 @@ if __name__ == '__main__':
                 'chem_results': chem_results,
                 'vina': vina_results
             })
+
+            # pdb.set_trace()
+    
     logger.info(f'Evaluate done! {num_samples} samples in total.')
+    logger.info(f'n_eval_success={n_eval_success}.')
 
     if args.docking_mode == 'qvina':
         vina = [r['vina'][0]['affinity'] for r in results]

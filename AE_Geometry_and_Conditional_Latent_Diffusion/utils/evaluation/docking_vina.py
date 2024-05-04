@@ -1,6 +1,6 @@
-import sys
-sys.path.append("./autodocktools_prepare_py3k")
-sys.path.append("../../EquiBind/")
+# import sys
+# sys.path.append("./autodocktools_prepare_py3k")
+# sys.path.append("../../EquiBind/")
 
 from openbabel import pybel
 from meeko import MoleculePreparation
@@ -182,30 +182,37 @@ class VinaDockingTask(BaseDockingTask):
             os.path.basename(ligand_filename)[:10] + '.pdb'  # PDBId_Chain_rec.pdb
         )
         protein_path = os.path.join(protein_root, protein_fn)
+        print(f"from_generated_mol: {protein_path}")
         return cls(protein_path, ligand_rdmol, **kwargs)
 
     def __init__(self, protein_path, ligand_rdmol, tmp_dir='./tmp', center=None,
-                 size_factor=2., buffer=5.0):
+                 size_factor=2., buffer=5.0, task_id=''):
+        # print("test0")
         super().__init__(protein_path, ligand_rdmol)
         # self.conda_env = conda_env
         self.tmp_dir = os.path.realpath(tmp_dir)
         os.makedirs(tmp_dir, exist_ok=True)
 
-        self.task_id = get_random_id()
+        # self.task_id = get_random_id()
+        self.task_id=task_id
         self.receptor_id = self.task_id + '_receptor'
         self.ligand_id = self.task_id + '_ligand'
 
         self.receptor_path = protein_path
         self.ligand_path = os.path.join(self.tmp_dir, self.ligand_id + '.sdf')
 
+        # print("test1")
         self.recon_ligand_mol = ligand_rdmol
         ligand_rdmol = Chem.AddHs(ligand_rdmol, addCoords=True)
 
+        # print("test2")
         sdf_writer = Chem.SDWriter(self.ligand_path)
         sdf_writer.write(ligand_rdmol)
         sdf_writer.close()
+        # print("***ligand_rdmol.NumAtoms()=",ligand_rdmol.NumAtoms())
         self.ligand_rdmol = ligand_rdmol
 
+        # print("test3")
         pos = ligand_rdmol.GetConformer(0).GetPositions()
         if center is None:
             self.center = (pos.max(0) + pos.min(0)) / 2
@@ -217,6 +224,7 @@ class VinaDockingTask(BaseDockingTask):
         else:
             self.size_x, self.size_y, self.size_z = (pos.max(0) - pos.min(0)) * size_factor + buffer
 
+        # print("test4")
         self.proc = None
         self.results = None
         self.output = None
