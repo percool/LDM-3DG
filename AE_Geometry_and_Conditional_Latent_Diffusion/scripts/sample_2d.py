@@ -34,9 +34,14 @@ if __name__ == '__main__':
     samples = torch.load('./samples_latent_dock/emb2ds.pt')
     n1, n3 = samples.shape
     n2=1000 # num_sample in sample_z.py
-    
-    samples=np.expand_dims(samples, 1) # in sample_z, emb2ds.pt does not copy n2 times in the 2nd dimension.
-    samples=np.repeat(samples,n2,axis=1)
+
+    samples=samples.unsqueeze(1)
+    # pdb.set_trace()
+    # samples=np.expand_dims(samples, 1) # in sample_z, emb2ds.pt does not copy n2 times in the 2nd dimension.
+    # samples=np.repeat(samples,n2,axis=1)
+
+    samples=samples.expand(-1,n2,-1)
+    # pdb.set_trace()
     samples = samples.reshape((n1*n2, n3))[:, :250]
 
     # 2. decode G~p(G|z)
@@ -52,7 +57,7 @@ if __name__ == '__main__':
 
     dataset = torch.utils.data.TensorDataset(samples)
     # dataloader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=False, num_workers=4)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=64*8*4, shuffle=False, num_workers=4)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=64*8*4, shuffle=False, num_workers=8)
     smiles = []
     for batch in tqdm(dataloader):
         batch = batch[0].to(device)
@@ -60,5 +65,5 @@ if __name__ == '__main__':
             ss = model.decode(batch)
             smiles += ss
 
-    torch.save(smiles, './samples_latent/sample_smiles.pt')
+    torch.save(smiles, './samples_latent_dock/sample_smiles.pt')
 

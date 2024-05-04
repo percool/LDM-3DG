@@ -123,7 +123,8 @@ if __name__ == '__main__':
 
     iter_start=args.start_iter
     if iter_start!=0:
-        model_all=torch.load('logs_diffusion/ldm_2024_04_21__14_32_31/checkpoints/'+str(iter_start)+'.pt') ## NEED TO MODIFY EACH TIME
+        # model_all=torch.load('logs_diffusion/ldm_2024_04_21__14_32_31/checkpoints/'+str(iter_start)+'.pt') ## NEED TO MODIFY EACH TIME
+        model_all=torch.load('logs_diffusion/ldm_2024_04_21__22_32_29/checkpoints/'+str(iter_start)+'.pt') ## NEED TO MODIFY EACH TIME
         model.load_state_dict(model_all['model']) 
     else:
         pass # don't load model
@@ -208,7 +209,7 @@ if __name__ == '__main__':
             if it % config.train.val_freq == 0 or it == config.train.max_iters:
                 val_loss = loss_it / config.train.val_freq
                 if best_loss is None or val_loss < best_loss:
-                    logger.info(f'[Validate] Best val loss achieved: {val_loss:.6f}')
+                    logger.info(f'[Validate] Best val loss achieved: {val_loss:.6f} at iter {it}')
                     best_loss, best_iter = val_loss, it
                     ckpt_path = os.path.join(ckpt_dir, '%d.pt' % it)
                     torch.save({

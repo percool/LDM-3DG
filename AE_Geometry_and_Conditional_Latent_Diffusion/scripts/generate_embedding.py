@@ -124,11 +124,11 @@ def sample_diffusion_ligand(model, data, num_samples, batch_size=16, device='cud
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('config', type=str)
+    parser.add_argument('config', type=str) # here is configs/sampling.yml
     parser.add_argument('-i', '--data_id', type=int)
     parser.add_argument('--device', type=str, default='cuda:0')
     parser.add_argument('--batch_size', type=int, default=100)
-    parser.add_argument('--result_path', type=str, default='./outputs')
+    parser.add_argument('--result_path', type=str, default='./outputs_dock')
     args = parser.parse_args()
 
     logger = misc.get_logger('sampling')
@@ -158,7 +158,8 @@ if __name__ == '__main__':
         transform=transform
     )
     train_set, test_set = subsets['train'], subsets['test']
-    logger.info(f'Successfully load the dataset (size: {len(test_set)})!')
+    logger.info(f'Successfully load the train_set dataset (size: {len(train_set)})!')
+    logger.info(f'Successfully load the test_set dataset (size: {len(test_set)})!')
 
     # Load model
     model = ScorePosNet3D(
@@ -176,8 +177,11 @@ if __name__ == '__main__':
 
     emb_2d = []
     emb_3d = []
-    for idx in tqdm(range(len(train_set))):
-        data = train_set[idx]
+    # for idx in tqdm(range(len(train_set))):
+    #     data = train_set[idx]
+    for idx in tqdm(range(len(test_set))):
+        print("idx: ", idx)
+        data = test_set[idx]
 
         # 2d embedding
         smi = data['ligand_smiles']
@@ -197,39 +201,41 @@ if __name__ == '__main__':
                                                  init_ligand_v=data.ligand_atom_feature_full.to(args.device),
                                                  batch_ligand=torch.zeros(data.ligand_pos.shape[0], dtype=torch.int64).to(args.device), time_step=None) )
         
-
+    print("Start saving...")
     emb_2d = torch.cat(emb_2d, dim=0)
-    torch.save(emb_2d, 'emb2d.pt')
+    # torch.save(emb_2d, 'emb2d.pt')
+    torch.save(emb_2d, os.path.join(result_path, 'emb2d_test.pt') #need test
 
     emb_3d = torch.cat(emb_3d, dim=0)
-    torch.save(emb_3d, 'emb3d.pt')
+    # torch.save(emb_3d, 'emb3d.pt')
+    torch.save(emb_3d, os.path.join(result_path, 'emb3d_test.pt')
 
-
+    print("Finish saving")
     ### YY: generate embedding
 
 
-    assert False
+    # assert False
 
-    data = test_set[args.data_id]
-    pred_pos, pred_v, pred_pos_traj, pred_v_traj, pred_v0_traj, pred_vt_traj, time_list = sample_diffusion_ligand(
-        model, data, config.sample.num_samples,
-        batch_size=args.batch_size, device=args.device,
-        num_steps=config.sample.num_steps,
-        pos_only=config.sample.pos_only,
-        center_pos_mode=config.sample.center_pos_mode,
-        sample_num_atoms=config.sample.sample_num_atoms
-    )
-    result = {
-        'data': data,
-        'pred_ligand_pos': pred_pos,
-        'pred_ligand_v': pred_v,
-        'pred_ligand_pos_traj': pred_pos_traj,
-        'pred_ligand_v_traj': pred_v_traj,
-        'time': time_list
-    }
-    logger.info('Sample done!')
+    # data = test_set[args.data_id]
+    # pred_pos, pred_v, pred_pos_traj, pred_v_traj, pred_v0_traj, pred_vt_traj, time_list = sample_diffusion_ligand(
+    #     model, data, config.sample.num_samples,
+    #     batch_size=args.batch_size, device=args.device,
+    #     num_steps=config.sample.num_steps,
+    #     pos_only=config.sample.pos_only,
+    #     center_pos_mode=config.sample.center_pos_mode,
+    #     sample_num_atoms=config.sample.sample_num_atoms
+    # )
+    # result = {
+    #     'data': data,
+    #     'pred_ligand_pos': pred_pos,
+    #     'pred_ligand_v': pred_v,
+    #     'pred_ligand_pos_traj': pred_pos_traj,
+    #     'pred_ligand_v_traj': pred_v_traj,
+    #     'time': time_list
+    # }
+    # logger.info('Sample done!')
 
-    result_path = args.result_path
-    os.makedirs(result_path, exist_ok=True)
-    shutil.copyfile(args.config, os.path.join(result_path, 'sample.yml'))
-    torch.save(result, os.path.join(result_path, f'result_{args.data_id}.pt'))
+    # result_path = args.result_path
+    # os.makedirs(result_path, exist_ok=True)
+    # shutil.copyfile(args.config, os.path.join(result_path, 'sample.yml'))
+    # torch.save(result, os.path.join(result_path, f'result_{args.data_id}.pt'))

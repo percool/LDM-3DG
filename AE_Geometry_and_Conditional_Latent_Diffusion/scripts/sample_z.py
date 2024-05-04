@@ -44,7 +44,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('config', type=str)
     parser.add_argument('--device', type=str, default='cuda')
-    parser.add_argument('--logdir', type=str, default='./logs_diffusion')
+    parser.add_argument('--logdir', type=str, default='./logs_diffusion') #useless
     parser.add_argument('--tag', type=str, default='')
     parser.add_argument('--train_report_iter', type=int, default=200)
     args = parser.parse_args()
@@ -99,7 +99,7 @@ if __name__ == '__main__':
         transform=transform
     )
     # train_set, val_set = subsets['train'], subsets['test']
-    train_set, val_set = subsets['test'], subsets['test']
+    train_set, val_set = subsets['train'], subsets['test']
     logger.info(f'Training: {len(train_set)} Validation: {len(val_set)}')
     
 
@@ -140,16 +140,21 @@ if __name__ == '__main__':
     model.load_state_dict(torch.load('./logs_diffusion/ldm_2024_04_21__22_32_29/checkpoints/25000.pt')['model'])
     
     # load latent embedding
-    emb2d_all = torch.load('../AE_geom_cond_weights_and_data/emb2d.pt')
-    emb3d_all = torch.load('../AE_geom_cond_weights_and_data/emb3d.pt')
+    emb2d_all = torch.load('./outputs_dock/emb2d_test.pt') # used for testing only
+    # emb3d_all = torch.load('./outputs_dock/emb3d_test.pt')
+    
+    # emb2d_all = torch.load('../AE_geom_cond_weights_and_data/emb2d.pt') # already used for training
+    # emb3d_all = torch.load('../AE_geom_cond_weights_and_data/emb3d.pt')
     
     idx2idx = - torch.ones(len(dataset), dtype=torch.int64)
-    idx_val = torch.tensor(torch.load(config.data['split'])['test']) # TODO: check if the name 'test' is right
+    idx_val = torch.tensor(torch.load(config.data['split'])['test']) # 'train' 99990; 'val' 0 empty; 'test' 100;
     idx2idx[idx_val] = torch.arange(len(val_set))
 
     # print(model)
     print(f'protein feature dim: {protein_featurizer.feature_dim} ligand feature dim: {ligand_featurizer.feature_dim}')
     logger.info(f'# trainable parameters: {misc.count_parameters(model) / 1e6:.4f} M')
+
+    pdb.set_trace()
 
     model.eval()
     num_sample = 1000 #1000
@@ -164,7 +169,9 @@ if __name__ == '__main__':
         idxs = idx2idx[batch.id.to('cpu')]
         emb2d = emb2d_all[idxs].to(args.device)
         # emb3d = emb3d_all[idxs].to(args.device)
-
+        
+        # pdb.set_trace()
+        
         with torch.no_grad():
             z, emb_prot = model.sample_z(emb2d, batch.protein_pos, batch.protein_atom_feature.float(), batch.protein_element_batch, num_sample=num_sample)
             # emb_prot is predicted emb3d after reverse denoising process from diffusion model
@@ -183,6 +190,6 @@ if __name__ == '__main__':
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
-    torch.save(emb2ds, 'samples_latent/emb2ds.pt') # For evaluation, 2D decoder need to work on this pt file
-    torch.save(zs, 'samples_latent/sample_z.pt')
-    torch.save(emb_prots, 'samples_latent/emb_protein.pt')
+    torch.save(emb2ds, 'samples_latent_dock/emb2ds.pt') # For evaluation, 2D decoder need to work on this pt file
+    torch.save(zs, 'samples_latent_dock/sample_z.pt')
+    torch.save(emb_prots, 'samples_latent_dock/emb_protein.pt')
