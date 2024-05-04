@@ -179,6 +179,10 @@ if __name__ == '__main__':
     print("emb2ds.shape, zs.shape, emb_prots.shape:")
     print(emb2ds.shape, zs.shape, emb_prots.shape)
 
+    folder_path='samples_latent_dock'
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
     torch.save(emb2ds, 'samples_latent/emb2ds.pt') # For evaluation, 2D decoder need to work on this pt file
     torch.save(zs, 'samples_latent/sample_z.pt')
     torch.save(emb_prots, 'samples_latent/emb_protein.pt')

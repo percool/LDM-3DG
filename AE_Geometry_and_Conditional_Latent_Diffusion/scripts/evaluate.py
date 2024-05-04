@@ -37,7 +37,7 @@ def print_ring_ratio(all_ring_sizes, logger):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('sample_path', type=str)
-    parser.add_argument('--verbose', type=eval, default=False)
+    parser.add_argument('--verbose', type=eval, default=True)
     parser.add_argument('--eval_step', type=int, default=-1)
     parser.add_argument('--data_id', type=int, default=0)
     parser.add_argument('--eval_num_examples', type=int, default=None)
@@ -83,7 +83,7 @@ if __name__ == '__main__':
         tmp_dir = os.path.join(args.sample_path, 'mols_' + str(args.data_id))
 
         for sample_idx, (pred_v, pred_pos) in enumerate(zip(r['atom_types'], r['pred_ligand_pos'])):
-
+            print("======================NEW LOOP BEGIN====================")
             if 5 in pred_v:
                 continue
 
@@ -135,7 +135,10 @@ if __name__ == '__main__':
                 'chem_results': chem_results,
                 'vina': vina_results
             })
+
+            # pdb.set_trace()
     logger.info(f'Evaluate done! {num_samples} samples in total.')
+    logger.info(f'n_eval_success={n_eval_success}.')
 
     if args.docking_mode == 'qvina':
         vina = [r['vina'][0]['affinity'] for r in results]
