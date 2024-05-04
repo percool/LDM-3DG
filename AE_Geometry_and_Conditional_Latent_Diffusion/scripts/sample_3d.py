@@ -164,7 +164,8 @@ if __name__ == '__main__':
         transform=transform
     )
     train_set, test_set = subsets['train'], subsets['test']
-    logger.info(f'Successfully load the dataset (size: {len(test_set)})!')
+    logger.info(f'Successfully load the train dataset (size: {len(train_set)})!')
+    logger.info(f'Successfully load the test dataset (size: {len(test_set)})!')
 
     # Load model
     # TODO: the model used here is ScorePosNet3D ?!
@@ -182,10 +183,32 @@ if __name__ == '__main__':
     from datasets.protein_ligand import get_ligand_atom_features
 
     zs = torch.load('./samples_latent_dock/sample_z.pt') # these are 3d latent vector length=250
-    smiles = torch.load('./samples_latent_dock/sample_smiles.pt') # now these are from decoder(z_2d)
 
-    # TODO: use ground truth smiles -- below not verified, don't use it now
-    # smiles = torch.load(f='../AE_topo_weights_and_data/smiles2emb_dict.pt')
+    # Method 1: use sampled 2d smiles. [BAD choice]
+    # smiles = torch.load('./samples_latent_dock/sample_smiles.pt') # now these are from decoder(z_2d)
+
+    # Method 2: use ground truth smiles 
+    from tqdm import tqdm
+    from rdkit import Chem
+    smi2emb_dict = torch.load('../AE_topo_weights_and_data/smiles2emb_dict_pocket.pt')
+
+    # copy embedding generation code from generate_embedding.py
+    smiles = []
+    for idx in tqdm(range(len(test_set))):
+        print("idx: ", idx)
+        data = test_set[idx]
+
+        # 2d embedding
+        smi = data['ligand_smiles']
+        mol = Chem.MolFromSmiles(smi)
+        mol = Chem.RemoveHs(mol)
+        smi = Chem.MolToSmiles(mol, isomericSmiles=False)
+        smi = Chem.CanonSmiles(smi)
+        for i in range(1000): # num_sample=1000 in sample_z.py [NEED to be careful]
+            smiles += smi
+    
+    logger.info(f'Successfully load the smiles! {len(smiles)}')
+    pdb.set_trace()
 
 
     batch_size = zs.shape[1]
