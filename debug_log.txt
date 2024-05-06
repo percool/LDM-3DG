@@ -1,0 +1,173 @@
+python -m scripts.train_latent_diffusion configs/training.yml --start_iter 0
+In train_latent_diffusion.py
+1. Validate] Val loss is the training loss
+2. ['test'] dataset is not truely used
+3. output in logs_diffusion
+
+python scripts.generate_embedding configs/sampling.yml
+generate outputs_dock/emb2d_test.pt and outputs_dock/emb3d_test.pt 
+[100,250] for each pt
+
+
+# sample latent embeddings
+python -m scripts.sample_z configs/training.yml
+In samples_latent_dock, save emb2ds.pt (have dumplicate according to num_sample for the purpose of saving storage. That is different from origianl project setting. We will duplicate it by num_sample in sample_2.py), sample_z.pt, emb_protein.pt
+Time: ~0.5h
+
+#python -m scripts.sample_2d 
+total time: ~5h
+
+python -m scripts.sample_3d configs/sampling.yml --data_id 0
+Input: ./samples_latent_dock/sample_z.pt
+Output in outputs_dock: (1) result_{data_id}.pt (2) sample.yml
+5 loop, total time:~2.5h 
+total    : 42949672960
+free     : 19148308480
+used     : 23801364480
+
+
+python -m scripts.evaluate outputs_dock --docking_mode vina_score --protein_root ./data/test_set --data_id 0
+
+
+==================
+python -m scripts.evaluate outputs --docking_mode vina_score --protein_root data/test_set --data_id 0
+
+pip install meeko==0.4.0 scipy pdb2pqr vina==1.2.2 
+python -m pip install git+https://github.com/Valdes-Tresanco-MS/AutoDockTools_py3
+
+pip install dgllife
+pip install dgl==0.9.1
+pip install biopandas
+
+ps -ef | grep python
+kill -9 [263413]
+
+https://github.com/ikalvet/frozen-conf-xtb/blob/master/frozen_conf_xtb.py
+https://gist.github.com/ElectricRCAircraftGuy/8ca9c04924ac11a50d48c2061d28b090
+https://github.com/jaimergp/autodocktools-prepare-py3k/tree/master
+
+pip install rdkit-pypi==2020.9.5.2 # work for sample_2d
+pip install rdkit==2023.9.4 # work for evaluation
+
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+numba 0.57.1 requires numpy<1.25,>=1.21, but you have numpy 1.20.0 which is incompatible.[0.56.4]
+pandas 1.5.2 requires numpy>=1.20.3; python_version < "3.10", but you have numpy 1.20.0 which is incompatible.[1.4.4]
+scipy 1.13.0 requires numpy<2.3,>=1.22.4, but you have numpy 1.20.0 which is incompatible.[1.10]
+torchmetrics 1.3.2 requires numpy>1.20.0, but you have numpy 1.20.0 which is incompatible.[0.11.0]
+===========
+/scratch/user/fengzh_g/.conda/envs/LDM
+
+export LD_LIBRARY_PATH=/scratch/user/fengzh_g/.conda/envs/LDM/lib:$LD_LIBRARY_PATH
+
+export ENV_NAME=LDM ; conda create -n ${ENV_NAME} --yes; source activate ${ENV_NAME} ; export LD_LIBRARY_PATH=/scratch/user/fengzh_g/.conda/envs/${ENV_NAME}/lib/:${LD_LIBRARY_PATH}
+
+conda install -c conda-forge gcc --yes ; conda install -c anaconda python=3.9 --yes ; conda install -c nvidia libcusparse=11 --yes ;conda install -c conda-forge cxx-compiler --yes ; conda install -c conda-forge libcurand --yes
+
+pip install torch==1.12.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113 ; python -c "import torch; print(torch.__version__)" ; python -c "import torch; print(torch.version.cuda)"
+
+# torch-spline-conv is not installed
+pip install torch-scatter==2.1.0 torch-sparse==0.6.16 torch-cluster==1.6.0 torch-geometric==2.2.0 -f https://data.pyg.org/whl/torch-1.12.1+cu113.html
+
+pip install torch-scatter torch-sparse torch-cluster torch-geometric -f https://data.pyg.org/whl/torch-1.13.0+cu117.html
+
+conda install -c conda-forge jupyterlab --yes
+conda install p7zip -c conda-forge --yes
+7z x AE_geom_cond_weights_and_data.zip
+
+
+pip install tensorboard==2.8.0
+conda install lightning -c conda-forge
+pip install matplotlib
+
+pip install anndata==0.9.2 ; pip install antlr4-python3-runtime==4.9.3 ; pip install appdirs==1.4.4 ;  pip install axial-positional-embedding==0.2.1 ; pip install biopython==1.83 ; pip install charset-normalizer==2.1.1 ; pip install cmake==3.28.1 ; pip install cmappy==4.0.1 ; pip install colored-traceback==0.3.0 ; pip install contextlib2==21.6.0 ; pip install contourpy==1.0.6 ; pip install cycler==0.11.0 ; pip install dcor==0.6 ; pip install deepspeed==0.5.9 ;  pip install dm-tree==0.1.8 ; pip install docker-pycreds==0.4.0 ; pip install e3fp==1.2.5 ; pip install e3nn==0.5.1 ; 
+
+pip install easydict==1.10 ; pip install einops==0.6.0 ; pip install exceptiongroup==1.1.3 ; pip install fair-esm==2.0.0 ; pip install fcd-torch==1.0.7 ; pip install filelock==3.8.0 ; pip install fonttools==4.38.0 ;  pip install geomloss==0.2.6 ; pip install gitdb==4.0.10 ; pip install gitpython==3.1.30 ; pip install h5py==3.9.0 ; pip install hjson==3.1.0 ; pip install huggingface-hub==0.11.0 ; pip install igraph==0.10.6 ; pip install imageio==2.25.0 ; pip install importlib-resources==5.12.0 ; pip install iniconfig==2.0.0 ; pip install ipdb==0.13.13 ; pip install keopscore==2.1.2 ; 
+
+pip install kiwisolver==1.4.4 ; pip install leidenalg==0.10.1 ; pip install lightning-utilities==0.5.0 ; pip install lit==17.0.6 ; pip install numba==0.57.1 ; pip install llvmlite==0.40.1 ; pip install lmdb==1.3.0 ; pip install local-attention==1.4.4 ; pip install markdown-it-py==3.0.0 ; pip install matplotlib==3.7.1 ; pip install mdurl==0.1.2 ; pip install meeko==0.4.0 ; pip install ml-collections==0.1.1 ; pip install mmh3==3.0.0 ; pip install molgrid==0.5.3 ; pip install mpmath==1.2.1 ; pip install msgpack==1.0.4 ; pip install natsort==8.4.0 ; pip install networkx==2.8.8 ; pip install ninja==1.11.1 ; 
+
+# pip install nvidia-cublas-cu11==11.10.3.66 ; pip install nvidia-cuda-cupti-cu11==11.7.101 ; pip install nvidia-cuda-nvrtc-cu11==11.7.99 ; pip install nvidia-cuda-runtime-cu11==11.7.99 ; pip install nvidia-cudnn-cu11==8.5.0.96 ; pip install nvidia-cufft-cu11==10.9.0.58 ; pip install nvidia-curand-cu11==10.2.10.91 ; pip install nvidia-cusolver-cu11==11.4.0.1 ; pip install nvidia-cusparse-cu11==11.7.4.91 ; pip install nvidia-nccl-cu11==2.14.3 ; pip install nvidia-nvtx-cu11==11.7.91 ; 
+pip install omegaconf==2.3.0 ; pip install openbabel-wheel==3.1.1.16 ; pip install opt-einsum==3.3.0 ; pip install opt-einsum-fx==0.1.4 ; pip install pandas==1.5.2 ; pip install pathtools==0.1.2 ; pip install patsy==0.5.3 ; pip install pillow==9.3.0 ; pip install pytest==7.4.2 ; pip install pluggy==1.3.0 ; 
+
+pip install pot==0.8.2 ; pip install prefetch-generator==1.0.3 ; pip install product-key-memory==0.1.10 ; pip install protobuf==3.20.1 ; pip install psutil==5.9.4 ; pip install py-cpuinfo==9.0.0 ; pip install py3dmol==2.0.1.post1 ; pip install pyaml==21.10.1 ; pip install pybind11==2.11.1 ; pip install pygments==2.17.2 ; pip install pygmtools==0.3.4 ; pip install pykeops==2.1.2 ; pip install pynndescent==0.5.10 ; pip install pyquaternion==0.9.9 ; pip install python-magic==0.4.27 ; pip install pytorch-lightning==1.8.6 ; pip install pyyaml==6.0 ; pip install rdkit==2023.9.4 ; pip install rdkit-pypi==2022.9.1 ; 
+
+pip install regex==2022.10.31 ; pip install rich==13.7.0 ; pip install scanpy==1.9.4 ; pip install scprep==1.2.3 ; pip install sdaxen-python-utilities==0.1.5 ; pip install seaborn==0.12.2 ; pip install sentry-sdk==1.15.0 ; pip install session-info==1.0.0 ; pip install setproctitle==1.3.2 ; pip install sinkhorn-transformer==0.11.4 ; pip install sklearn==0.0.post4 ; pip install smart-open==6.3.0 ; pip install smmap==5.0.0 ; pip install statsmodels==0.14.0 ; pip install stdlib-list==0.9.0 ; pip install sympy==1.11.1 ; pip install tensorboardx==2.5.1 ; pip install termcolor==2.4.0 ; pip install texttable==1.6.7 ; pip install tokenizers==0.13.2 ; 
+
+# pip install torch-ema==0.3 ; pip install torchdiffeq==0.2.3 ; pip install torchdrug==0.2.0.post1 ; pip install torchmetrics==0.11.0 ; pip install torchsde==0.2.6 ; pip install torchvision==0.12.0 ; 
+pip install trampoline==0.1.2 ; pip install transformers==4.24.0 ; pip install umap-learn==0.5.3 ; pip install urllib3==1.26.12 ; pip install vina==1.2.3 ; pip install wandb==0.13.10 ; pip install wget==3.2 ; pip install xtb==22.1 ; 
+
+Failed:
+pip install autodocktools-py3==1.5.7.post1+3.gaee55d5 ;
+pip install dllogger==1.0.0 ; => pip install git+https://github.com/NVIDIA/dllogger#egg=dllogger
+pip install triton==2.0.0 ; => make deepspeed fail => pip install triton==1.0.0
+
+Special:
+pip install functorch==0.1.0 ; % will uninstall torch 1.12.1+cu113 and install torch 1.11.1
+pip install llvmlite==0.40.1 ; %% test
+
+pip install tensorboard==1.14.0
+
+export LD_LIBRARY_PATH=/scratch/user/fengzh_g/.conda/envs/${ENV_NAME}/lib/:${LD_LIBRARY_PATH}
+
+gdown https://drive.google.com/uc?id=1tON3UDGP4rd4mgR1bofFoJKECg_yaCEK
+jar xvf file.zip
+
+## Training Diffusion Model [dont work]
+cd ./AE_Geometry_and_Unconditional_Latent_Diffusion
+# qm9
+python main_latent_ddpm_qm9.py --ddp_num_nodes 1 --ddp_device 1 --data_dir ../e3_diffusion_for_molecules/qm9/latent_diffusion/emb_2d_3d_spatial_graphs --log_dir ../AE_geom_uncond_weights_and_data/job17_latent_ddpm_qm9_my_test
+
+## Sampling
+cd ./AE_Geometry_and_Unconditional_Latent_Diffusion
+export log_dir=../AE_geom_uncond_weights_and_data/job18_latent_ddpm_drug_spatial_graphs
+export sample_number=1000
+python sample1_latent_ddpm_qm9_latent.py --log_dir $log_dir --sample_number $sample_number
+
+
+## conditional part
+## diff train
+python -m scripts.train_latent_diffusion configs/training.yml --start_iter 0
+python -m scripts.train_latent_diffusion configs/training.yml --start_iter 12000
+=================================================================
+# DiffDock
+/scratch/user/fengzh_g/Anaconda3/2023.07-2/envs/diffdock
+/scratch/user/fengzh_g/Anaconda3/2023.07-2/envs/diffdock
+
+python datasets/esm_embedding_preparation.py --data_dir ./data/PDBBind_processed/
+
+python scripts/extract.py esm2_t33_650M_UR50D /home/percool/Downloads/repos/DiffDock/data/pdbbind_sequences.fasta embeddings_output --repr_layers 33 --include per_tok --truncation_seq_length 4096
+
+python datasets/esm_embeddings_to_pt.py --esm_embeddings_path data/embeddings_output/ --output_path data/esm2_embeddings_pdb.pt
+
+python -m evaluate  --config default_inference_args.yaml --split_path data/splits/timesplit_test --split_path data/splits/timesplit_test --batch_size 10 --esm_embeddings_path data/esm2_embeddings_pdb.pt --data_dir data/PDBBind_processed/ --tqdm --split test --chain_cutoff 10 --dataset pdbbind
+
+module load Anaconda3/2022.10
+
+module load Anaconda3/2023.07-2 
+[fengzh_g@faster1 fengzh_g]$ source activate /scratch/user/fengzh_g/Anaconda3/2023.07-2/envs/diffdock  
+
+python scripts/extract.py esm2_t33_650M_UR50D pdbbind_sequences.fasta embeddings_output --repr_layers 33 --include per_tok --truncation_seq_length 4096
+
+python -m evaluate  --config default_inference_args.yaml --split_path data/splits/timesplit_test --split_path data/splits/timesplit_test --batch_size 10 --esm_embeddings_path data/esm2_embeddings_pdb.pt --data_dir data/PDBBind_processed/ --tqdm --split test --chain_cutoff 10 --dataset pdbbind
+
+
+Number of complexes:  360
+radius protein: mean 34.57943344116211, std 10.475341796875, max 80.72074127197266
+radius molecule: mean 7.976024150848389, std 3.1496429443359375, max 17.989681243896484
+distance protein-mol: mean 12.733709335327148, std 6.286215782165527, max 43.769161224365234
+rmsd matching: mean 0.6098308848441099, std 0.6128905625210165, max 4.7453225386062305
+random coordinates: mean -1.0, std 0.0, max -1
+random rmsd matching: mean -1.0, std 0.0, max -1
+HAPPENING | confidence model uses different type of graphs than the score model. Loading (or creating if not existing) the data for the confidence model now.
+
+Number of complexes:  360
+radius protein: mean 34.57943344116211, std 10.475341796875, max 80.72074127197266
+radius molecule: mean 7.995293617248535, std 3.165146589279175, max 19.28235626220703
+distance protein-mol: mean 12.733707427978516, std 6.286215782165527, max 43.7691650390625
+rmsd matching: mean 0.6177075904475994, std 0.624216976654901, max 5.22711203621494
+random coordinates: mean -1.0, std 0.0, max -1
+random rmsd matching: mean -1.0, std 0.0, max -1
+/scratch/user/fengzh_g/Anaconda3/2023.07-2/envs/diffdock/lib/python3.9/site-packages/torch/jit/_check.py:181: UserWarning: The TorchScript type system doesn't support instance-level annotations on empty non-base types in `__init__`. Instead, either 1) use a type annotation in the class body, or 2) wrap the type in `torch.jit.Attribute`.
+  warnings.warn("The TorchScript type system doesn't support "
+common t schedule [1.   0.95 0.9  0.85 0.8  0.75 0.7  0.65 0.6  0.55 0.5  0.45 0.4  0.35
+ 0.3  0.25 0.2  0.15 0.1  0.05]
+Size of test dataset:  360
