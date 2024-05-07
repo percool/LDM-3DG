@@ -23,14 +23,12 @@ The main idea of our docking model is to fix the ligand 2D feature, and make it 
 Note that we are using the exact same structure of the encoder (HierVAE), in fact, we even  did not retrain it.
 
 ## Experiment Results
-![alt text](exp_result.png)
-According to the experimental results, it seems that although the "Latent-Diffusion" model architecture111
-is good at generating novel ligands for a given protein (de novo design), it had failed to reconstruct112
-the protein-ligand docking pair given restrictions on both protein and ligands.
+![alt text](spec1.png)
+According to the experimental results, it seems that although the "Latent-Diffusion" model architecture is good at generating novel ligands for a given protein (de novo design), it had failed to reconstruct the protein-ligand docking pair given restrictions on both protein and ligands.
 
 ## Future (and On-going) Works 
 The main idea of out future work for this project is illustrated in the follwing figure.
-![alt text](Docking_spec05-1.png)
+![alt text](spec2.png)
 
 It is clear that we have 2 additional blocks/modifications, namely MLP for manipulating the latent vector and hoping it would lead the output to a lower energy mode; and we replace the HierVAE to a GNN for directly capturing 2D graph features.
 
@@ -41,6 +39,11 @@ Note that the GNN had been constructed and built, but not yet integrated to our 
 - `\AE_Geometry_and_Conditional_Latent_Diffusion\scripts\sample_2d.py`
 - `\AE_Geometry_and_Conditional_Latent_Diffusion\scripts\sample_3d.py`
 - `smile_to_graph_emb.ipynb` (only on branch gnn_emb)
+
+
+
+
+
 
 
 ============== Original README Below ==============
