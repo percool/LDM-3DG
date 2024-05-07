@@ -23,6 +23,10 @@ The main idea of our docking model is to fix the ligand 2D feature, and make it 
 Note that we are using the exact same structure of the encoder (HierVAE), in fact, we even  did not retrain it.
 
 ## Experiment Results
+![alt text](exp_result.png)
+According to the experimental results, it seems that although the "Latent-Diffusion" model architecture111
+is good at generating novel ligands for a given protein (de novo design), it had failed to reconstruct112
+the protein-ligand docking pair given restrictions on both protein and ligands.
 
 ## Future (and On-going) Works 
 The main idea of out future work for this project is illustrated in the follwing figure.
