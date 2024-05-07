@@ -1,6 +1,6 @@
-# Latent 3D Graph Diffusion
+# Latent Diffusion for Ligand-Protein Docking
 
-A fork from: 
+This is a work build upon a fork from: 
 
 PyTorch implementation for [Latent 3D Graph Diffusion](https://openreview.net/forum?id=cXbnGtO0NZ)
 
@@ -10,6 +10,38 @@ In ICLR 2024.
 
 License: GPL-3.0 (If you are interested in a different license, for example, for commercial use, please contact us.)
 
+(The original contents of README are preserved below the dashed line.)
+
+## Overview
+We build upon the code base of the Latent 3D Graph Diffusion model, and tailored it to a model specified for protein-ligand docking problem.
+Please refer to our report `Report_050624.pdf` for more details.
+
+## Model Idea
+The main idea of our docking model is to fix the ligand 2D feature, and make it a condition for the diffusion part, i.e., the diffusion part is only generating the 3D part of the ligand. This is illustrated in the following figure.
+![alt text](Docking_spec01-1.png)
+
+Note that we are using the exact same structure of the encoder (HierVAE), in fact, we even  did not retrain it.
+
+## Experiment Results
+
+## Future (and On-going) Works 
+The main idea of out future work for this project is illustrated in the follwing figure.
+![alt text](Docking_spec05-1.png)
+
+It is clear that we have 2 additional blocks/modifications, namely MLP for manipulating the latent vector and hoping it would lead the output to a lower energy mode; and we replace the HierVAE to a GNN for directly capturing 2D graph features.
+
+Note that the GNN had been constructed and built, but not yet integrated to our current word due to poor performance. The code can be found in `smile_to_graph_emb.ipynb` on branch gnn_emb. The trained GNN model weights and generated embeddings can be found in shared drive:  https://drive.google.com/drive/folders/1BLyFkw0Bho_TfhyWyzcvZRkEvRY-3aem?usp=sharing
+
+## Modified Files
+- `\AE_Geometry_and_Conditional_Latent_Diffusion\scripts\train_latent_diffusion.py`
+- `\AE_Geometry_and_Conditional_Latent_Diffusion\scripts\sample_2d.py`
+- `\AE_Geometry_and_Conditional_Latent_Diffusion\scripts\sample_3d.py`
+- `smile_to_graph_emb.ipynb` (only on branch gnn_emb)
+
+
+============== Original README Below ==============
+
+# Latent 3D Graph Diffusion
 ## Overview
 A pipeline to compress 3D graphs into the latent space, where a (vectorial) diffusion model is implemented to capture the distribution.
 
