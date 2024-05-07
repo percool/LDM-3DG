@@ -18,12 +18,12 @@ Please refer to our report `Report_050624.pdf` for more details.
 
 ## Model Idea
 The main idea of our docking model is to fix the ligand 2D feature, and make it a condition for the diffusion part, i.e., the diffusion part is only generating the 3D part of the ligand. This is illustrated in the following figure.
-![alt text](Docking_spec01-1.png)
+![alt text](spec1.png)
 
 Note that we are using the exact same structure of the encoder (HierVAE), in fact, we even  did not retrain it.
 
 ## Experiment Results
-![alt text](spec1.png)
+![alt text](exp_result.png)
 According to the experimental results, it seems that although the "Latent-Diffusion" model architecture is good at generating novel ligands for a given protein (de novo design), it had failed to reconstruct the protein-ligand docking pair given restrictions on both protein and ligands.
 
 ## Future (and On-going) Works 
