@@ -55,6 +55,23 @@ pandas 1.5.2 requires numpy>=1.20.3; python_version < "3.10", but you have numpy
 scipy 1.13.0 requires numpy<2.3,>=1.22.4, but you have numpy 1.20.0 which is incompatible.[1.10]
 torchmetrics 1.3.2 requires numpy>1.20.0, but you have numpy 1.20.0 which is incompatible.[0.11.0]
 ===========
+original:
+conda create -n ${ENV_NAME} ; conda activate ${ENV_NAME}
+
+conda install -c conda-forge gcc
+conda install -c anaconda python=3.9
+conda install -c nvidia libcusparse=11
+conda install -c conda-forge cxx-compiler
+conda install -c conda-forge libcurand
+
+export LD_LIBRARY_PATH=/scratch/user/yuning.you/.conda/envs/${ENV_NAME}/lib/:${LD_LIBRARY_PATH}
+
+pip install torch==1.12.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113 ; python -c "import torch; print(torch.__version__)" ; python -c "import torch; print(torch.version.cuda)"
+
+# torch-spline-conv is not installed
+pip install torch-scatter torch-sparse torch-cluster torch-geometric -f https://data.pyg.org/whl/torch-1.12.1+cu113.html
+
+modification:
 /scratch/user/fengzh_g/.conda/envs/LDM
 
 export LD_LIBRARY_PATH=/scratch/user/fengzh_g/.conda/envs/LDM/lib:$LD_LIBRARY_PATH
